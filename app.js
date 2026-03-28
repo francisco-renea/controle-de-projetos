@@ -215,3 +215,31 @@ document.getElementById("search").addEventListener("input", function () {
     render(resultado);
   }
 });
+
+document.getElementById("btn-exportar").addEventListener("click", function () {
+	prepararParaExcel();
+});
+
+function prepararParaExcel() {
+	// substituir selects por texto
+	document.querySelectorAll("select").forEach(select => {
+		const valor = select.value;
+
+		const span = document.createElement("span");
+		span.textContent = valor;
+
+		select.parentNode.replaceChild(span, select);
+	});
+
+	// transformar links em texto (opcional, mas recomendado)
+	//document.querySelectorAll("a").forEach(link => {
+	//	const texto = link.href || link.textContent;
+
+	//	const span = document.createElement("span");
+	//	span.textContent = texto;
+
+	//	link.parentNode.replaceChild(span, link);
+	//});
+}
+
+
