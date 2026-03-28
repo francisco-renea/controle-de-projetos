@@ -1,0 +1,201 @@
+import subprocess
+import os
+import re
+import argparse
+parser = argparse.ArgumentParser(description="Ler a saida do git ls-files e organiza os dados em csv")
+parser.add_argument("numero1", help="numero do HEAD~1")
+parser.add_argument("numero2", help="numero do HEAD")
+args = parser.parse_args()
+numero1 = args.numero1
+numero2 = args.numero2
+HEAD1 = "HEAD~" + numero1
+HEAD0 = "HEAD~" + numero2 or 0
+result = subprocess.run(
+    ["git", "diff", "--name-status", HEAD1, HEAD0],
+    cwd=os.path.expanduser("~/Documents/CONSOLIDADO/"),
+    capture_output=True
+)
+
+output = result.stdout.decode("utf-8", errors="ignore")
+output = output.splitlines()
+
+def remover_revisao_caminho(caminho) -> str:
+    return re.sub(r"\.R\d+[a-zA-Z]?.*", "", caminho)
+
+def parse_linha_git(linha):
+    linha = linha.strip()
+    
+    # separa status e caminho
+    status, caminho = linha.split(maxsplit=1)
+    
+    nome = os.path.basename(caminho)
+    
+    # extensão (.pdf, .dwg, etc)
+    _, ext = os.path.splitext(nome)
+    
+    # revisão (R0, R1, R1a, etc)
+    match = re.search(r"\.(R\d+[a-zA-Z]?)\.", nome)
+    revisao = match.group(1) if match else None
+    
+    # nome base sem revisão
+    nome_base = re.sub(r"\.R\d+[a-zA-Z]?", "", nome)
+    
+    return {
+        "status": status,
+        "caminho": remover_revisao_caminho(caminho),
+        "nome": nome,
+        "extensao": ext,
+        "revisao": revisao,
+        "base": nome_base
+    }
+
+arquivos = [
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/AJUSTE BSTC - EST.244+11.50/DE-SPM00021D-114.116-825-H06_005.R1c.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_101.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_102.R0d.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_102.R0e.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_103.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_104.R0a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_104.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_201.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_202.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H01_203.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H04_001.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H04_001.R1b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H04_002.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H04_002.R1c.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_001.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_002.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_003.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_004.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_005.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_005.R1c.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H06_006.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.116-825-H07_101.R0a.pdf",
+        #"CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/MC-SPM00021D-114.116-825-H04_001.R1a.pdf",
+        #"CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/MC-SPM00021D-114.116-825-H04_001.R1b.pdf",
+        #"CANHEDO/FASE 01/03-Projeto de Drenagem/PROJETOS/RT-SPM00021D-114.116-825-H01_101.R2a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/DE-SPM00021D-114.116-825-H01_102.R0e.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/DE-SPM00021D-114.116-825-H01_104.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/DE-SPM00021D-114.116-825-H01_201.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/DE-SPM00021D-114.116-825-H01_202.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/DE-SPM00021D-114.116-825-H01_203.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/DE-SPM00021D-114.116-825-H07_101.R0a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/SUPERADOS/DE-SPM00021D-114.116-825-H01_102.R0d.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/SUPERADOS/DE-SPM00021D-114.116-825-H01_104.R0a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/SUPERADOS/DE-SPM00021D-114.116-825-H01_201.R0a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/SUPERADOS/DE-SPM00021D-114.116-825-H01_202.R0a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REV - ATENDIMENTO CETESB/SUPERADOS/DE-SPM00021D-114.116-825-H01_203.R0a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_101.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_102.R0e.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_103.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_104.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_201.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_202.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H01_203.R0b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H04_001.R1b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H04_002.R1b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H06_001.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H06_002.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H06_003.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H06_004.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H06_005.R1b.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H06_006.R1a.pdf",
+        "CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-H07_101.R0a.pdf",
+        #"CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/MC-SPM00021D-114.116-825-H04_001.R1b.pdf",
+        #"CANHEDO/FASE 01/03-Projeto de Drenagem/REVISÃO GEOMETRIA - FERRADURA/RT-SPM00021D-114.116-825-H01_101.R2a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/COMPATIBILIZAÇÃO DE PLANTA E PERFIL/DE-SPM00021D-114.117-825-H09_001.R01b.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H04_001.R01a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H04_002.R01a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H04_003.R01a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H04_004.R01a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H07_001.R00a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H07_002.R00a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H07_003.R01a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H09_001.R01a.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H09_001.R01b.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H09_002.R00b.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H09_003.R00b.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H09_004.R00b.pdf",
+        "CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-114.117-825-H09_005.R00b.pdf",
+        #"CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/MC-SPM00021D-114.117-825-H04_001.R02a.pdf",
+        #"CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/MD-SPM00021D-114.117-825-H07_001.R0a.pdf",
+        #"CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/RT-SPM00021D-114.117-825-H01_001.R00a.pdf",
+        #"CANHEDO/FASE 02/03-Projeto de Drenagem/PROJETOS/RT-SPM00021D-114.117-825-H01_101.R00b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/ATENDIMENTO CETESB/DE-SPM00021D-115.117-925-H01_103.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/ATENDIMENTO CETESB/DE-SPM00021D-115.117-925-H01_104.R0a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/ATENDIMENTO CETESB/DE-SPM00021D-115.117-925-H07_101.R0a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/DE-SPM00021D-115.117-925-H04_001.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/DE-SPM00021D-115.117-925-H06_001.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/DE-SPM00021D-115.117-925-H06_004.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/DE-SPM00021D-115.117-925-H06_014.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/DE-SPM00021D-115.117-925-H06_015.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_104.R0b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_105.R0a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/ESTUDOS HIDROLÓGICOS/RT-SPM00021D-115.117-925-H01_101.R1b.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/GALERIA TRIPLA - ROTATÓRIA/MC-SPM00021D-115.117-925-H04_001.R1c.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H04_001.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H04_002.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H04_003.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H04_001.R2a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H04_002.R2a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H04_003.R2a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H04_004.R0a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_001.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H06_001.R2a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_002.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_003.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_004.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H06_004.R1b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_005.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_006.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_007.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_008.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_009.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_010.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_011.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_012.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_013.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H06_013.R2a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_014.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H06_014.R2a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H06_015.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H06_015.R2a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-H06_016.R0a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H07_001.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H07_002.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H07_003.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H07_101.R0a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_001.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_002.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_003.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_004.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_005.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_006.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/DE-SPM00021D-115.117-925-H09_007.R0a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_101.R0b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_102.R0b.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_103.R1a.pdf",
+        "CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_103.R1b.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/ESTUDOS HIDROLÓGICOS/DE-SPM00021D-115.117-925-H01_104.R0a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/ESTUDO HIDROLÓGICO/DE-SPM00021D-115.117-925-H01_104.R1a.pdf",
+        "./REVISÃO - ESTUDO DE TRÁFEGO/ESTUDO HIDROLÓGICO/DE-SPM00021D-115.117-925-H01_105.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/ESTUDOS HIDROLÓGICOS/RT-SPM00021D-115.117-925-H01_101.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/MC-SPM00021D-115.117-925-H04_001.R1a.pdf",
+        #"CANHEDO/FASE 03/03-Projeto de Drenagem/PROJETOS/MD-SPM00021D-115.117-925-H07_001.R0a.pdf",
+        #"FREE FLOW/FF01/03-Projeto de Drenagem/PROJETOS/DE-SPD114021-114.115-825-H04_001.R2a.pdf",
+        #"FREE FLOW/FF01/03-Projeto de Drenagem/PROJETOS/MC-SPD114021-114.115-825-H04-001_R0a.pdf",
+        #"FREE FLOW/FF01/03-Projeto de Drenagem/PROJETOS/MD-SPD114021-114.115-825-H01_001.R1a.pdf",
+        "FREE FLOW/FF02/03-Projeto de Drenagem/PROJETOS/DE-SPD116021-116.117-925-H04_001.R1a.pdf",
+        #"FREE FLOW/FF02/03-Projeto de Drenagem/PROJETOS/MC-SPD116021-116.117-925-H04-001_R0a.pdf",
+        #"FREE FLOW/FF02/03-Projeto de Drenagem/PROJETOS/MD-SPD116021-116.117-925-H01_001.R1a.pdf",
+        #./REVISÃO - ESTUDO DE TRÁFEGO/ESTUDO HIDROLÓGICO/RT-SPM00021D-115.117-925-H01_101.R2a.pdf
+        #./REVISÃO - ESTUDO DE TRÁFEGO/MC-SPM00021D-115.117-925-H04_001.R2a.pdf
+]
+
+for line in output:
+    text = parse_linha_git(line)
+    for file in arquivos:
+        #file = remover_revisao_caminho(file)
+        if text["caminho"] in file:
+            print(file)

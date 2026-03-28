@@ -1,0 +1,11 @@
+import subprocess
+import os
+
+result = subprocess.run(
+        ["git","diff","--name-only","HEAD~1","HEAD"],
+            cwd = os.path.expanduser("~/Documents/CONSOLIDADO/"),
+        capture_output = True,
+        text = True,
+        encoding="utf-8"
+        )
+print(result.stdout)
