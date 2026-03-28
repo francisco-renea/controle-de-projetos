@@ -2,41 +2,40 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Busca de Projetos</title>
+  <title>Controle de Projetos</title>
 
   <!-- Fuse.js -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
   <style>
     body { font-family: Arial; padding: 20px; }
-    input { width: 300px; padding: 8px; }
-    table { border-collapse: collapse; margin-top: 20px; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 8px; }
-    tr:hover { background: #f5f5f5; }
+    input { width: 300px; padding: 8px; margin-bottom: 15px; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tr:hover {
+      background: #f5f5f5;
+    }
+
+    select {
+      padding: 4px;
+    }
   </style>
 </head>
 <body>
 
-<h2>Busca de Projetos</h2>
+<h2>Controle de Projetos</h2>
 
 <input type="text" id="search" placeholder="Buscar...">
-
-<table id="tabela">
-  <thead>
-    <tr>
-      <th>Path</th>
-      <th>Assunto</th>
-      <th>Nome</th>
-      <th>Fase</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<!-- Seu JS separado -->
-<script src="app.js"></script>
-
-
 
 <table id="tabela">
   <thead>
@@ -44,11 +43,14 @@
       <th>ID</th>
       <th>Revisão</th>
       <th>Extensão</th>
-      <th>Arquivo</th>
+      <th>Assunto</th>
+      <th>Abrir</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
+
+<script src="app.js"></script>
 
 </body>
 </html>

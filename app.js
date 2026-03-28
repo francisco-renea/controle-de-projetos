@@ -2,13 +2,18 @@ let dados = [];
 let fuse;
 
 // carregar JSON
-fetch('data.json')
+fetch("data.json")
   .then(res => res.json())
   .then(json => {
     dados = json;
 
     fuse = new Fuse(dados, {
-      keys: ['path', 'assunto', 'nome', 'fase'],
+      keys: [
+        "id",
+        "ultima_revisao.nome",
+        "ultima_revisao.assunto",
+        "ultima_revisao.obra"
+      ],
       threshold: 0.3
     });
 
@@ -23,49 +28,10 @@ function render(lista) {
   lista.forEach(item => {
     const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td><a href="file:///${item.path}" target="_blank">${item.path}</a></td>
-      <td>${item.assunto}</td>
-      <td>${item.nome}</td>
-      <td>${item.fase}</td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-
-// busca
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("search");
-
-  input.addEventListener("input", function () {
-    const termo = this.value;
-
-    if (!termo) {
-      render(dados);
-    } else {
-      const resultado = fuse.search(termo).map(r => r.item);
-      render(resultado);
-    }
-  });
-});
-
-
-
-function render(lista) {
-  const tbody = document.querySelector("#tabela tbody");
-  tbody.innerHTML = "";
-
-  lista.forEach(item => {
-    const tr = document.createElement("tr");
-
-    // extrair revisões únicas
+    // revisões únicas
     const revisoes = [...new Set(item.revisoes.map(r => r.revisao))];
 
-    // extrair extensões únicas
-    const extensoes = [...new Set(item.revisoes.map(r => r.tipo_arquivo))];
-
-    // selects
+    // select revisão
     const selectRev = document.createElement("select");
     revisoes.forEach(r => {
       const opt = document.createElement("option");
@@ -74,17 +40,44 @@ function render(lista) {
       selectRev.appendChild(opt);
     });
 
+    // select extensão (dinâmico)
     const selectExt = document.createElement("select");
-    extensoes.forEach(e => {
-      const opt = document.createElement("option");
-      opt.value = e;
-      opt.textContent = e;
-      selectExt.appendChild(opt);
-    });
+
+    // assunto dinâmico
+    const tdAssunto = document.createElement("td");
 
     // link
     const link = document.createElement("a");
     link.textContent = "Abrir";
+    link.target = "_blank";
+
+	function atualizarExtensoes() {
+	  const rev = selectRev.value;
+
+	  const exts = [
+	    ...new Set(
+	      item.revisoes
+		.filter(r => r.revisao === rev)
+		.map(r => r.tipo_arquivo)
+	    )
+	  ];
+
+	  selectExt.innerHTML = "";
+
+	  exts.forEach(e => {
+	    const opt = document.createElement("option");
+	    opt.value = e;
+	    opt.textContent = e;
+	    selectExt.appendChild(opt);
+	  });
+
+	  // PRIORIDADE PARA PDF
+	  if (exts.includes("pdf")) {
+	    selectExt.value = "pdf";
+	  } else {
+	    selectExt.value = exts[0]; // fallback
+	  }
+	}
 
     function atualizarLink() {
       const rev = selectRev.value;
@@ -96,17 +89,25 @@ function render(lista) {
 
       if (encontrado) {
         link.href = "file:///" + encontrado.path;
+        tdAssunto.textContent = encontrado.assunto || "";
       } else {
         link.removeAttribute("href");
+        tdAssunto.textContent = "";
       }
     }
 
     // eventos
-    selectRev.addEventListener("change", atualizarLink);
+    selectRev.addEventListener("change", () => {
+      atualizarExtensoes();
+      atualizarLink();
+    });
+
     selectExt.addEventListener("change", atualizarLink);
 
-    // inicializar com ultima revisão
+    // inicialização com última revisão
     selectRev.value = item.ultima_revisao.revisao;
+
+    atualizarExtensoes();
     selectExt.value = item.ultima_revisao.tipo_arquivo;
 
     atualizarLink();
@@ -127,18 +128,21 @@ function render(lista) {
     tr.appendChild(tdId);
     tr.appendChild(tdRev);
     tr.appendChild(tdExt);
+    tr.appendChild(tdAssunto);
     tr.appendChild(tdLink);
 
     tbody.appendChild(tr);
   });
-
-fuse = new Fuse(dados, {
-  keys: [
-    'id',
-    'ultima_revisao.nome',
-    'ultima_revisao.assunto',
-    'ultima_revisao.obra'
-  ],
-  threshold: 0.3
-});
 }
+
+// busca
+document.getElementById("search").addEventListener("input", function () {
+  const termo = this.value;
+
+  if (!termo) {
+    render(dados);
+  } else {
+    const resultado = fuse.search(termo).map(r => r.item);
+    render(resultado);
+  }
+});
