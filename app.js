@@ -126,6 +126,20 @@ function render(lista) {
     const tdLink = document.createElement("td");
     tdLink.appendChild(link);
 
+const tdPath = document.createElement("td");
+
+const pastas = [
+  item.ultima_revisao.pasta1,
+  item.ultima_revisao.pasta2,
+  item.ultima_revisao.pasta3
+];
+
+tdPath.textContent = pastas
+  .filter(p => p)        // remove null/undefined
+  .join(" / ");          // monta breadcrumb
+
+tr.appendChild(tdPath);
+
     tr.appendChild(tdId);
     tr.appendChild(tdRev);
     tr.appendChild(tdExt);
