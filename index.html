@@ -7,40 +7,15 @@
   <!-- Fuse.js -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    input { width: 300px; padding: 8px; margin-bottom: 15px; }
+  <link rel="stylesheet" href="styles.css">
 
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-
-    tr:hover {
-      background: #f5f5f5;
-    }
-
-    select {
-      padding: 4px;
-    }
-  </style>
-</head>
 <body>
 
+<button id="btn-exportar">Preparar para Excel</button>
 <h2>Controle de Projetos</h2>
-
 <input type="text" id="search" placeholder="Buscar...">
 <span id="contador">Quantidade de Projetos Encontrados</span>
-
 <div id="tabela-container"></div>
-
 <script src="app.js"></script>
-
 </body>
 </html>

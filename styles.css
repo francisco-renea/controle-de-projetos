@@ -1,0 +1,127 @@
+/* ===================== */
+/* RESET BÁSICO */
+/* ===================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* ===================== */
+/* HEADER */
+/* ===================== */
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/* ===================== */
+/* BUSCA */
+/* ===================== */
+
+#search {
+  width: 320px;
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#contador {
+  font-size: 14px;
+  color: #555;
+}
+
+/* ===================== */
+/* TABELAS */
+/* ===================== */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 30px;
+  background: white;
+}
+
+/* cabeçalho */
+th {
+  background-color: #343a40;
+  color: white;
+  font-weight: normal;
+  padding: 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+}
+
+/* células */
+td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* zebra striping */
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* hover */
+tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+/* ===================== */
+/* SELECT */
+/* ===================== */
+
+select {
+  padding: 3px;
+  font-size: 12px;
+}
+
+/* ===================== */
+/* LINKS */
+/* ===================== */
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===================== */
+/* TITULOS DAS TABELAS */
+/* ===================== */
+
+h3 {
+  margin-top: 30px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background-color: #dee2e6;
+  border-left: 4px solid #007bff;
+  font-size: 14px;
+}
+
+/* ===================== */
+/* RESPONSIVO SIMPLES */
+/* ===================== */
+
+@media (max-width: 768px) {
+  #search {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+}
