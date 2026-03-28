@@ -79,6 +79,7 @@ function render(lista) {
 	  }
 	}
 
+
     function atualizarLink() {
       const rev = selectRev.value;
       const ext = selectExt.value;
@@ -133,6 +134,12 @@ function render(lista) {
 
     tbody.appendChild(tr);
   });
+  atualizarContador(lista.length)
+}
+
+function atualizarContador(qtd) {
+  const el = document.getElementById("contador");
+  el.textContent = qtd + " Projetos Encontrados";
 }
 
 // busca
