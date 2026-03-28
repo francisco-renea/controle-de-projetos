@@ -1,3 +1,5 @@
+//let root = "file:///C:/Users/franciscogo/Documents/CONSOLIDADO/";
+let root = "./";
 let dados = [];
 let fuse;
 
@@ -39,7 +41,7 @@ function render(lista) {
     const thead = document.createElement("thead");
     const trHead = document.createElement("tr");
 
-    ["Pasta", "ID", "Revisão", "Extensão", "Assunto", "Abrir"].forEach(t => {
+    ["ID", "Revisão", "Extensão", "Assunto", "Abrir"].forEach(t => {
       const th = document.createElement("th");
       th.textContent = t;
       trHead.appendChild(th);
@@ -141,7 +143,7 @@ function criarLinha(item) {
     );
 
     if (encontrado) {
-      link.href = "file:///" + encontrado.path;
+      link.href = root + encontrado.path;
       tdAssunto.textContent = encontrado.assunto || "";
 
       const pastas = [
@@ -187,7 +189,6 @@ function criarLinha(item) {
   const tdLink = document.createElement("td");
   tdLink.appendChild(link);
 
-  tr.appendChild(tdPath);
   tr.appendChild(tdId);
   tr.appendChild(tdRev);
   tr.appendChild(tdExt);
