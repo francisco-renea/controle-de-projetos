@@ -1,9 +1,12 @@
+from collections import defaultdict
 import json
 import csv
 import os
 import re
 import argparse
 import html
+
+
 
 parser = argparse.ArgumentParser(description="Ler a saida do git ls-files e organiza os dados em csv")
 
@@ -75,6 +78,44 @@ def sufixoDaRevisao(revisao):
     if match:
         return match.group(1) if match.group(1) != "" else None
     return ""
+
+def gerar_id(path):
+    nome = path.split("/")[-1]
+    
+    match = re.match(r"(.*)\.R[^.]*\.(.+)", nome)
+    
+    if match:
+        return match.group(1)  # sem revisão
+    return nome
+
+def agrupar_por_revisao(dados):
+    grupos = defaultdict(list)
+
+    for info in dados:
+        id_base = gerar_id(info["path"])
+        grupos[id_base].append(info)
+
+    return grupos
+
+def montar_estrutura(grupos):
+    resultado = []
+
+    for id_base, revisoes in grupos.items():
+
+        # ordenar por revisão (importante)
+        revisoes.sort(key=lambda x: (
+            x.get("revisao_numero", 0),
+            x.get("revisao_sufixo", "")
+        ))
+
+        resultado.append({
+            "id": id_base,
+            "revisoes": revisoes,
+            "ultima_revisao": revisoes[-1]  # útil no front
+        })
+
+    return resultado
+
 
 def marcarNovoEVelho(dados):
     revisoes_por_nome = {}
@@ -165,6 +206,7 @@ def analisar_nome(path):
     revisao_numero = numeroDaRevisao(revisao)
     revisao_sufixo = sufixoDaRevisao(revisao)
     obj = {
+        "id": gerar_id(path),
         "assunto": assunto,
         "nome": nome_padrao,
         "fase": fase,
@@ -198,73 +240,10 @@ for linha in linhas:
     dados.append(info)
 
 dados = marcarNovoEVelho(dados)
+dados = agrupar_por_revisao(dados)
+dados = montar_estrutura(dados)
+
 
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(dados,f,ensure_ascii=False,indent=2)
 
-#with open(OUTPUT, "w", newline="", encoding="utf-8-sig") as csvfile:
-#    writer = csv.writer(csvfile,delimiter=';')
-#
-#    # cabeçalho
-#    writer.writerow([
-#        "path",
-#        "assunto",
-#        "nome",
-#        "fase",
-#        "projetista",
-#        "tipo_doc",
-#        "obra",
-#        "trecho",
-#        "codigo",
-#        "materia",
-#        "materia_num",
-#        "pagina",
-#        "revisao",
-#        "rev_num",
-#        "rev_suf",
-#        "revisao_status",
-#        "tipo_arquivo",
-#        "pasta1",
-#        "pasta2",
-#        "pasta3",
-#        "pasta4",
-#        "pasta5",
-#        "pasta6",
-#        "pasta7",
-#        "pasta8",
-#        "pasta9",
-#        "pasta10"
-#    ])
-#
-#    for info in dados:
-#        writer.writerow([
-#            info["path"],
-#            info["assunto"],
-#            info["nome"],
-#            info["fase"],
-#            info["projetista"],
-#            info["tipo_doc"],
-#            info["obra"],
-#            info["trecho"],
-#            info["codigo"],
-#            info["materia"],
-#            info["materia_num"],
-#            info["pagina"],
-#            info["revisao"],
-#            info["revisao_numero"],
-#            info["revisao_sufixo"],
-#            info["revisao_status"],
-#            info["tipo_arquivo"],
-#            info["pasta1"],
-#            info["pasta2"],
-#            info["pasta3"],
-#            info["pasta4"],
-#            info["pasta5"],
-#            info["pasta6"],
-#            info["pasta7"],
-#            info["pasta8"],
-#            info["pasta9"],
-#            info["pasta10"]
-#        ])
-#
-#print("CSV gerado:", OUTPUT)
