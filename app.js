@@ -12,7 +12,8 @@ fetch("data.json")
         "id",
         "ultima_revisao.nome",
         "ultima_revisao.assunto",
-        "ultima_revisao.obra"
+        "ultima_revisao.obra",
+        "ultima_revisao.path"
       ],
       threshold: 0.3
     });
@@ -20,137 +21,183 @@ fetch("data.json")
     render(dados);
   });
 
-// render tabela
+// render principal (AGORA AGRUPADO EM TABELAS)
 function render(lista) {
-  const tbody = document.querySelector("#tabela tbody");
-  tbody.innerHTML = "";
+  const container = document.getElementById("tabela-container");
+  container.innerHTML = "";
 
-  lista.forEach(item => {
-    const tr = document.createElement("tr");
+  const grupos = agruparPorPastas(lista);
 
-    // revisões únicas
-    const revisoes = [...new Set(item.revisoes.map(r => r.revisao))];
+  for (const chave in grupos) {
+    const titulo = document.createElement("h3");
+    const qtd = grupos[chave].length;
+    titulo.textContent = `${chave || "Sem pasta definida"} (${qtd} Projetos)`;
+    container.appendChild(titulo);
 
-    // select revisão
-    const selectRev = document.createElement("select");
-    revisoes.forEach(r => {
-      const opt = document.createElement("option");
-      opt.value = r;
-      opt.textContent = r;
-      selectRev.appendChild(opt);
+    const table = document.createElement("table");
+
+    const thead = document.createElement("thead");
+    const trHead = document.createElement("tr");
+
+    ["Pasta", "ID", "Revisão", "Extensão", "Assunto", "Abrir"].forEach(t => {
+      const th = document.createElement("th");
+      th.textContent = t;
+      trHead.appendChild(th);
     });
 
-    // select extensão (dinâmico)
-    const selectExt = document.createElement("select");
+    thead.appendChild(trHead);
+    table.appendChild(thead);
 
-    // assunto dinâmico
-    const tdAssunto = document.createElement("td");
+    const tbody = document.createElement("tbody");
 
-    // link
-    const link = document.createElement("a");
-    link.textContent = "Abrir";
-    link.target = "_blank";
-
-	function atualizarExtensoes() {
-	  const rev = selectRev.value;
-
-	  const exts = [
-	    ...new Set(
-	      item.revisoes
-		.filter(r => r.revisao === rev)
-		.map(r => r.tipo_arquivo)
-	    )
-	  ];
-
-	  selectExt.innerHTML = "";
-
-	  exts.forEach(e => {
-	    const opt = document.createElement("option");
-	    opt.value = e;
-	    opt.textContent = e;
-	    selectExt.appendChild(opt);
-	  });
-
-	  // PRIORIDADE PARA PDF
-	  if (exts.includes("pdf")) {
-	    selectExt.value = "pdf";
-	  } else {
-	    selectExt.value = exts[0]; // fallback
-	  }
-	}
-
-
-    function atualizarLink() {
-      const rev = selectRev.value;
-      const ext = selectExt.value;
-
-      const encontrado = item.revisoes.find(r =>
-        r.revisao === rev && r.tipo_arquivo === ext
-      );
-
-      if (encontrado) {
-        link.href = "file:///" + encontrado.path;
-        tdAssunto.textContent = encontrado.assunto || "";
-      } else {
-        link.removeAttribute("href");
-        tdAssunto.textContent = "";
-      }
-    }
-
-    // eventos
-    selectRev.addEventListener("change", () => {
-      atualizarExtensoes();
-      atualizarLink();
+    grupos[chave].forEach(item => {
+      const tr = criarLinha(item);
+      tbody.appendChild(tr);
     });
 
-    selectExt.addEventListener("change", atualizarLink);
+    table.appendChild(tbody);
+    container.appendChild(table);
+  }
 
-    // inicialização com última revisão
-    selectRev.value = item.ultima_revisao.revisao;
-
-    atualizarExtensoes();
-    selectExt.value = item.ultima_revisao.tipo_arquivo;
-
-    atualizarLink();
-
-    // montar linha
-    const tdId = document.createElement("td");
-    tdId.textContent = item.id;
-
-    const tdRev = document.createElement("td");
-    tdRev.appendChild(selectRev);
-
-    const tdExt = document.createElement("td");
-    tdExt.appendChild(selectExt);
-
-    const tdLink = document.createElement("td");
-    tdLink.appendChild(link);
-
-const tdPath = document.createElement("td");
-
-const pastas = [
-  item.ultima_revisao.pasta1,
-  item.ultima_revisao.pasta2,
-  item.ultima_revisao.pasta3
-];
-
-tdPath.textContent = pastas
-  .filter(p => p)        // remove null/undefined
-  .join(" / ");          // monta breadcrumb
-
-tr.appendChild(tdPath);
-
-    tr.appendChild(tdId);
-    tr.appendChild(tdRev);
-    tr.appendChild(tdExt);
-    tr.appendChild(tdAssunto);
-    tr.appendChild(tdLink);
-
-    tbody.appendChild(tr);
-  });
-  atualizarContador(lista.length)
+  atualizarContador(lista.length);
 }
 
+// agrupamento por pasta1/2/3
+function agruparPorPastas(lista) {
+  const grupos = {};
+
+  lista.forEach(item => {
+    const chave = [
+      item.ultima_revisao.pasta1,
+      item.ultima_revisao.pasta2,
+      item.ultima_revisao.pasta3
+    ]
+      .filter(Boolean)
+      .join(" / ");
+
+    if (!grupos[chave]) {
+      grupos[chave] = [];
+    }
+
+    grupos[chave].push(item);
+  });
+
+  return grupos;
+}
+
+// cria linha da tabela
+function criarLinha(item) {
+  const tr = document.createElement("tr");
+
+  const revisoes = [...new Set(item.revisoes.map(r => r.revisao))];
+
+  const selectRev = document.createElement("select");
+  revisoes.forEach(r => {
+    const opt = document.createElement("option");
+    opt.value = r;
+    opt.textContent = r;
+    selectRev.appendChild(opt);
+  });
+
+  const selectExt = document.createElement("select");
+
+  const tdAssunto = document.createElement("td");
+
+  const link = document.createElement("a");
+  link.textContent = "Abrir";
+  link.target = "_blank";
+
+  const tdPath = document.createElement("td");
+
+  function atualizarExtensoes() {
+    const rev = selectRev.value;
+
+    const exts = [
+      ...new Set(
+        item.revisoes
+          .filter(r => r.revisao === rev)
+          .map(r => r.tipo_arquivo)
+      )
+    ];
+
+    selectExt.innerHTML = "";
+
+    exts.forEach(e => {
+      const opt = document.createElement("option");
+      opt.value = e;
+      opt.textContent = e;
+      selectExt.appendChild(opt);
+    });
+
+    selectExt.value = exts.includes("pdf") ? "pdf" : exts[0];
+  }
+
+  function atualizarLink() {
+    const rev = selectRev.value;
+    const ext = selectExt.value;
+
+    const encontrado = item.revisoes.find(r =>
+      r.revisao === rev && r.tipo_arquivo === ext
+    );
+
+    if (encontrado) {
+      link.href = "file:///" + encontrado.path;
+      tdAssunto.textContent = encontrado.assunto || "";
+
+      const pastas = [
+        encontrado.pasta1,
+        encontrado.pasta2,
+        encontrado.pasta3
+      ];
+
+      tdPath.textContent = pastas.filter(Boolean).join(" / ");
+    } else {
+      link.removeAttribute("href");
+      tdAssunto.textContent = "";
+      tdPath.textContent = "";
+    }
+  }
+
+  // eventos
+  selectRev.addEventListener("change", () => {
+    atualizarExtensoes();
+    atualizarLink();
+  });
+
+  selectExt.addEventListener("change", atualizarLink);
+
+  // init
+  selectRev.value = item.ultima_revisao.revisao;
+
+  atualizarExtensoes();
+  selectExt.value = item.ultima_revisao.tipo_arquivo;
+
+  atualizarLink();
+
+  // colunas
+  const tdId = document.createElement("td");
+  tdId.textContent = item.id;
+
+  const tdRev = document.createElement("td");
+  tdRev.appendChild(selectRev);
+
+  const tdExt = document.createElement("td");
+  tdExt.appendChild(selectExt);
+
+  const tdLink = document.createElement("td");
+  tdLink.appendChild(link);
+
+  tr.appendChild(tdPath);
+  tr.appendChild(tdId);
+  tr.appendChild(tdRev);
+  tr.appendChild(tdExt);
+  tr.appendChild(tdAssunto);
+  tr.appendChild(tdLink);
+
+  return tr;
+}
+
+// contador
 function atualizarContador(qtd) {
   const el = document.getElementById("contador");
   el.textContent = qtd + " Projetos Encontrados";
