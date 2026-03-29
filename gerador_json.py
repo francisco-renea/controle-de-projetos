@@ -22,6 +22,25 @@ print("Entrada:", INPUT)
 print("Saída:", OUTPUT)
 
 
+def ler_arquivo_seguro(path) -> str:
+    encodings_tentativa = ["utf-8", "utf-8-sig", "latin-1", "cp1252"]
+
+    for enc in encodings_tentativa:
+        try:
+            with open(path,"r", encoding=enc) as f:
+                print(f"[OK] Lido com encoding: {enc}")
+                return f.readlines()
+        except UnicodeDecodeError:
+            continue
+
+    raise Exception("Não foi possível decodificar o arquivo com encodings conhecidos")
+
+
+def normalizar_texto(texto):
+    # remove caracteres problemáticos invisíveis
+    return texto.replace("\ufeff", "").strip()
+
+
 def buscar_assunto(nome, caminho_csv="assunto.csv"):
     with open(caminho_csv, newline='', encoding='cp1252') as f:
         reader = csv.reader(f, delimiter=';')
@@ -228,8 +247,7 @@ def analisar_nome(path):
     return obj
 
 
-with open(INPUT, encoding="utf-8-sig") as f:
-    linhas = f.readlines()
+linhas = ler_arquivo_seguro(INPUT)
 dados = []
 for linha in linhas:
     linha = linha.strip()
@@ -244,6 +262,6 @@ dados = agrupar_por_revisao(dados)
 dados = montar_estrutura(dados)
 
 
-with open("data.json", "w", encoding="utf-8") as f:
+with open(OUTPUT, "w", encoding="utf-8") as f:
     json.dump(dados,f,ensure_ascii=False,indent=2)
 

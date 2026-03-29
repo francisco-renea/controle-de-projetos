@@ -4,7 +4,7 @@ let dados = [];
 let fuse;
 
 // carregar JSON
-fetch("data.json")
+fetch(DATA_JSON_FILE)
   .then(res => res.json())
   .then(json => {
     dados = json;
