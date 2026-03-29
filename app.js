@@ -179,6 +179,7 @@ function criarLinha(item) {
   // colunas
   const tdId = document.createElement("td");
   tdId.textContent = item.id;
+  tdId.className   = item.className || ""
 
   const tdRev = document.createElement("td");
   tdRev.appendChild(selectRev);

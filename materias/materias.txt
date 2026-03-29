@@ -1,0 +1,21 @@
+00-Topografia
+01-Projeto Geométrico
+02-Projeto de Terraplenagem
+03-Projeto de Drenagem
+04-Projeto de Sinalização
+06-Projeto de Pavimentação
+07-Projeto de Estruturas
+08-Projeto de Elétrica
+09-Projeto de Geotecnia
+(10-Interferências|10-Projeto de interferência)
+11-Desapropriação
+12-Projeto de Desvio de Tráfego
+13-Projeto de Arquitetura
+(16-Paisagismo|16-Projeto de Paisagismo)
+BASES DOS PÓRTICOS E SEMIPÓRTICOS
+CALLBOX
+ENESCIL
+ESBOÇO PROJETOS - COMGÁS
+FUNCIONAL
+INSTRUMENTAÇÃO FASE 03
+ID.*\.xlsx$
