@@ -23,7 +23,7 @@ print("Saída:", OUTPUT)
 
 
 def ler_arquivo_seguro(path) -> str:
-    encodings_tentativa = ["utf-8", "utf-8-sig", "latin-1", "cp1252"]
+    encodings_tentativa = ["utf-8", "utf-8-sig", "latin-1", "cp1252", "ASCII"]
 
     for enc in encodings_tentativa:
         try:

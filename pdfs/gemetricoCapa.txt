@@ -1,0 +1,38 @@
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F02_001.R2a.pdf	Projeto de geometria - Planta
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F02_002.R1a.pdf	Projeto de geometria - Planta
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-F03_001.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-F03_002.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-F03_003.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F03_004.R2a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-F05_001.R2a.pdf	Projeto de geometria - Seções tipo
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO GEOMETRIA - FERRADURA/DE-SPM00021D-114.116-825-F05_002.R1a.pdf	Projeto de geometria - Seções tipo
+CANHEDO/FASE 01/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.116-825-F09_001.R0e.pdf	Estudo de interferência com CPTM e MRS
+CANHEDO/FASE 01/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.116-825-F09_002.R0c.pdf	Projeto de geometria - Seções tipo
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F02_003.R0a.pdf	
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F02_004.R0a.pdf	
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F03_005.R0a.pdf	
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F03_006.R0a.pdf	
+CANHEDO/FASE 01/01-Projeto Geométrico/REVISÃO - ESTUDO DE TRÁFEGO/DE-SPM00021D-114.116-825-F05_003.R0a.pdf	
+CANHEDO/FASE 02/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.117-825-F03_001.R0.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 02/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.117-825-F05_001.R1a.pdf	Projeto de geometria - Seções tipo
+CANHEDO/FASE 02/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.117-825-F07_001.R1a.pdf	Projeto de geometria - Planta e perfil longitudinal
+CANHEDO/FASE 02/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.117-825-F07_002.R1a.pdf	Projeto de geometria - Planta e perfil longitudinal
+CANHEDO/FASE 02/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.117-825-F07_003.R0b.pdf	Projeto de geometria - Planta e perfil longitudinal
+CANHEDO/FASE 02/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-114.117-825-F07_004.R0b.pdf	Projeto de geometria - Planta e perfil longitudinal
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F02_002.R2a.pdf	Projeto de geometria - Planta
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F02_001.R2a.pdf	Projeto de geometria - Planta
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F02_003.R2a.pdf	Projeto de geometria - Planta
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_001.R2a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_002.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_003.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-115.117-925-F03_004.R0a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_005.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_006.R2a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_007.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_008.R1a.pdf	Projeto de geometria - Perfis longitudinais
+CANHEDO/FASE 03/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-115.117-925-F05_001.R1a.pdf	Projeto de geometria - Seções tipo
+CANHEDO/FASE 03/01-Projeto Geométrico/PROJETOS/DE-SPM00021D-115.117-925-F05_002.R0a.pdf	Projeto de geometria - Seções tipo
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F02_004.R0a.pdf	
+CANHEDO/FASE 03/01-Projeto Geométrico/REVISÃO ESTUDO DE TRÁFEGO/DE-SPM00021D-115.117-925-F03_009.R0a.pdf	
+FREE FLOW/FF01/01-Projeto Geométrico/PROJETOS/DE-SPD114021-114.115-825-F07_001.R0b.pdf	
+FREE FLOW/FF02/01-Projeto Geométrico/PROJETOS/DE-SPD116021-116.117-925-F07_001.R0b.pdf	
