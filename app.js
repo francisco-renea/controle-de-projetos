@@ -1,5 +1,4 @@
 //let root = "file:///C:/Users/franciscogo/Documents/CONSOLIDADO/";
-let root = "./";
 let dados = [];
 let fuse;
 
@@ -212,10 +211,68 @@ document.getElementById("search").addEventListener("input", function () {
   if (!termo) {
     render(dados);
   } else {
-    const resultado = fuse.search(termo).map(r => r.item);
-    render(resultado);
+    //const resultado = fuse.search(termo).map(r => r.item);
+    //render(resultado);
+    buscar(termo)
   }
 });
+
+function buscar(query) {
+	query = normalizarQuery(query);
+
+	let termos;
+
+	if (query.includes(";")) {
+		// separação explícita (modo avançado)
+		termos = query
+			.split(";")
+			.map(t => t.trim())
+			.filter(t => t.length > 0);
+	} else {
+		// fallback simples
+		termos = query
+			.split(/\s+/) // evita múltiplos espaços
+			.map(t => t.trim())
+			.filter(t => t.length > 0);
+	}
+
+	let resultado = dados;
+
+	termos.forEach(termo => {
+		const fuseTemp = new Fuse(resultado, {
+			keys: [
+				"id",
+				"ultima_revisao.nome",
+				"ultima_revisao.assunto",
+				"ultima_revisao.obra",
+				"ultima_revisao.path"
+			],
+			threshold: 0.4,
+			ignoreLocation: true,
+			minMatchCharLength: 1
+		});
+
+		resultado = fuseTemp.search(termo).map(r => r.item);
+	});
+
+	render(resultado);
+}
+
+function normalizarQuery(query) {
+	const sinonimos = {
+		"ap": "apoio",
+		"cx": "caixa",
+		"vl": "valvula"
+	};
+	return query
+		.split(" ")
+		.map(termo => {
+			let t = termo.trim().toLowerCase();
+			return sinonimos[t] || t;
+		})
+		.join(" ");
+}
+
 
 document.getElementById("btn-exportar").addEventListener("click", function () {
 	prepararParaExcel();

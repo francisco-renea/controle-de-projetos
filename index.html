@@ -3,21 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <title>Controle de Projetos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fuse.js -->
-  <script>DATA_JSON_FILE = "./data.json";</script>
+  <!-- Config -->
+  <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
-
   <link rel="stylesheet" href="styles.css">
+</head>
 
 <body>
 
-<button id="btn-exportar">Preparar para Excel</button>
-<h2>Controle de Projetos</h2>
-<input type="text" id="search" placeholder="Buscar...">
-<span id="contador">Quantidade de Projetos Encontrados</span>
-<div id="tabela-container"></div>
-<script src="app.js"></script>
+  <main class="container">
+
+	  <div class="cabecalho">
+    <!-- Título -->
+    <header>
+      <h1>Sistema de Busca de Projetos</h1>
+      <p class="subtitulo">
+        Pesquise e filtre projetos de forma rápida
+      </p>
+    </header>
+
+    <!-- Área de Busca -->
+    <section class="busca">
+      <label for="search">Buscar projeto</label>
+      
+      <input 
+	     type="text" 
+	     id="search" 
+	     placeholder="Ex: Enescil; Implantação; Agulha"
+	     class="input-google"
+	     />
+
+      <div class="ajuda">
+        <p><strong>Dica:</strong> Use <code>;</code> para combinar filtros.</p>
+        <p>Exemplo: <code>Ap 1 a 10; Enescil; Implantação; Agulha</code></p>
+      </div>
+    </section>
+
+    <!-- Ações -->
+    <section style="display:none" class="acoes">
+      <button id="btn-exportar">
+        Exportar para Excel
+      </button>
+    </section>
+    </div>
+
+    <!-- Resultado -->
+    <section class="resultados">
+      <p id="contador">
+        Nenhum projeto carregado
+      </p>
+
+      <div id="tabela-container"></div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
