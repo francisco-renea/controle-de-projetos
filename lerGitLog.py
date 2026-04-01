@@ -320,7 +320,7 @@ def eh_excecao(texto, excecoes):
 # execução
 linhas = parse_arquivo()
 dados = []
-excecoes = ["final", ".py", ".js", ".html", ".css", "json"]
+excecoes = [".url","Lista desenhos","final", ".py", ".js", ".html", ".css", "json"]
 for linha in linhas:
     path = linha["path"]
     if eh_excecao(path, excecoes):
