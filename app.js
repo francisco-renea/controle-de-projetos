@@ -44,11 +44,14 @@ function render(lista) {
     const thead = document.createElement("thead");
     const trHead = document.createElement("tr");
 
-    ["ID", "Revisão", "Extensão", "Assunto", "Abrir"].forEach(t => {
-      const th = document.createElement("th");
-      th.textContent = t;
-      trHead.appendChild(th);
-    });
+	["ID", "Revisão", "Extensão", "Assunto", "Abrir"].forEach(t => {
+	  const th = document.createElement("th");
+
+	  th.textContent = t;
+	  th.dataset.label = t; // importante para o sort
+
+	  trHead.appendChild(th);
+	});
 
     thead.appendChild(trHead);
     table.appendChild(thead);
@@ -385,26 +388,22 @@ function ativarOrdenacaoTabelas() {
     const ths = tabela.querySelectorAll("thead th");
     const tbody = tabela.querySelector("tbody");
 
+    // guarda ordem original
     const linhasOriginais = Array.from(tbody.querySelectorAll("tr"));
 
     ths.forEach((th, colIndex) => {
-      let estado = 0;
-
-      if (!th.dataset.label) {
-        th.dataset.label = th.textContent.trim();
-      }
+      let estado = 0; // 0 = sem sort, 1 = asc, 2 = desc
 
       th.style.cursor = "pointer";
 
       th.addEventListener("click", () => {
         estado = (estado + 1) % 3;
 
-        // limpa todos os headers
-        ths.forEach(t => {
-          t.textContent = t.dataset.label;
-        });
+        // limpa setas de outros headers
+        ths.forEach(t => t.innerHTML = t.textContent);
 
         if (estado === 0) {
+          // reset
           linhasOriginais.forEach(tr => tbody.appendChild(tr));
           return;
         }
@@ -415,7 +414,7 @@ function ativarOrdenacaoTabelas() {
           let valA = getValorCelula(a, colIndex);
           let valB = getValorCelula(b, colIndex);
 
-          // tenta número puro
+          // tenta comparar como número
           let numA = parseFloat(valA.replace(",", "."));
           let numB = parseFloat(valB.replace(",", "."));
 
@@ -423,28 +422,22 @@ function ativarOrdenacaoTabelas() {
             return estado === 1 ? numA - numB : numB - numA;
           }
 
-          // tenta número no final da string
-          let finalA = extrairNumeroFinal(valA);
-          let finalB = extrairNumeroFinal(valB);
-
-          if (finalA !== null && finalB !== null) {
-            return estado === 1 ? finalA - finalB : finalB - finalA;
-          }
-
-          // fallback: string com ordenação natural
+          // string
           return estado === 1
-            ? valA.localeCompare(valB, undefined, { numeric: true, sensitivity: "base" })
-            : valB.localeCompare(valA, undefined, { numeric: true, sensitivity: "base" });
+            ? valA.localeCompare(valB)
+            : valB.localeCompare(valA);
         });
 
+        // aplica ordem
         linhas.forEach(tr => tbody.appendChild(tr));
 
         // seta visual
-        th.textContent = th.dataset.label + (estado === 1 ? " ↑" : " ↓");
+        th.innerHTML = th.textContent + (estado === 1 ? " ↑" : " ↓");
       });
     });
   });
 }
+
 
 function getValorCelula(tr, index) {
   const td = tr.children[index];
@@ -456,6 +449,7 @@ function getValorCelula(tr, index) {
 
   return td.textContent.trim();
 }
+
 
 function extrairNumeroFinal(str) {
   const match = str.match(/(\d+)\s*$/);
