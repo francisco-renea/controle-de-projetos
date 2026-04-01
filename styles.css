@@ -299,3 +299,141 @@ section {
   font-weight: bold;
 }
 
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  text-align: center;
+  justify-content: center;
+}
+
+.tab {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.tab:hover {
+  background: #eaeaea;
+}
+
+.tab.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* ===== TABELA ===== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+thead {
+  background-color: #f5f5f5;
+}
+
+th, td {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+/* ===== HEADER SORT ===== */
+
+th {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background 0.2s;
+}
+
+th:hover {
+  background-color: #eaeaea;
+}
+
+/* seta padrão (invisível até clicar) */
+th::after {
+  content: "";
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+/* quando asc */
+th.asc::after {
+  content: "↑";
+}
+
+/* quando desc */
+th.desc::after {
+  content: "↓";
+}
+
+/* ===== LINHAS ===== */
+
+tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+tbody tr:hover {
+  background-color: #f0f7ff;
+}
+
+/* ===== INPUT estilo Google (leve melhoria) ===== */
+
+.input-google {
+  width: 320px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-google:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 4px rgba(66, 133, 244, 0.4);
+}
+
+/* ===== TABS ===== */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.tab {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.tab:hover {
+  background: #f0f0f0;
+}
+
+.tab.active {
+  background: #4285f4;
+  color: white;
+  border-color: #4285f4;
+}
+
+/* ===== LINKS ===== */
+
+a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

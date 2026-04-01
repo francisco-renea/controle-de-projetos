@@ -19,8 +19,12 @@ fetch(DATA_JSON_FILE)
       threshold: 0.3
     });
 
-    render(dados);
+    //render(dados);
+    ativarTabs(dados);
+    const filtrados = filtrarPorPeriodo(dados, "hoje");
+    render(filtrados);
   });
+
 
 // render principal (AGORA AGRUPADO EM TABELAS)
 function render(lista) {
@@ -61,7 +65,81 @@ function render(lista) {
   }
 
   atualizarContador(lista.length);
+  ativarOrdenacaoTabelas();
 }
+
+
+
+// mapeamento id -> periodo
+const mapaPeriodos = {
+  "tab-todos": "todos",
+  "tab-hoje": "hoje",
+  "tab-7dias": "7dias",
+  "tab-30dias": "30dias",
+  "tab-3meses": "3meses"
+};
+
+// função de filtro
+function filtrarPorPeriodo(dados, periodo) {
+  if (periodo === "todos") return dados; // já resolve direto
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  return dados.filter(item => {
+    const dataStr = item.ultima_revisao?.verificadoEm;
+    if (!dataStr) return false;
+
+    // parsing manual (evita UTC)
+    const [ano, mes, dia] = dataStr.split("-").map(Number);
+    const data = new Date(ano, mes - 1, dia);
+    data.setHours(0, 0, 0, 0);
+
+    const diffMs = hoje - data;
+    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (periodo === "hoje") {
+      return diffDias === 0;
+    }
+
+    if (periodo === "7dias") {
+      return diffDias >= 0 && diffDias <= 7;
+    }
+
+    if (periodo === "30dias") {
+      return diffDias >= 0 && diffDias <= 30;
+    }
+
+    if (periodo === "3meses") {
+      return diffDias >= 0 && diffDias <= 90;
+    }
+
+    return false;
+  });
+}
+
+
+// ativa os botões
+function ativarTabs(dados) {
+  const tabs = document.querySelectorAll(".tab");
+
+  tabs.forEach(tab => {
+    tab.onclick = () => {
+
+      // troca botão ativo
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      // pega período
+      const periodo = mapaPeriodos[tab.id] || "todos";
+
+      // filtra e renderiza
+      const filtrados = filtrarPorPeriodo(dados, periodo);
+      render(filtrados);
+    };
+  });
+}
+
 
 // agrupamento por pasta1/2/3
 function agruparPorPastas(lista) {
@@ -300,4 +378,86 @@ function prepararParaExcel() {
 	//});
 }
 
+function ativarOrdenacaoTabelas() {
+  const tabelas = document.querySelectorAll("table");
 
+  tabelas.forEach((tabela) => {
+    const ths = tabela.querySelectorAll("thead th");
+    const tbody = tabela.querySelector("tbody");
+
+    const linhasOriginais = Array.from(tbody.querySelectorAll("tr"));
+
+    ths.forEach((th, colIndex) => {
+      let estado = 0;
+
+      if (!th.dataset.label) {
+        th.dataset.label = th.textContent.trim();
+      }
+
+      th.style.cursor = "pointer";
+
+      th.addEventListener("click", () => {
+        estado = (estado + 1) % 3;
+
+        // limpa todos os headers
+        ths.forEach(t => {
+          t.textContent = t.dataset.label;
+        });
+
+        if (estado === 0) {
+          linhasOriginais.forEach(tr => tbody.appendChild(tr));
+          return;
+        }
+
+        let linhas = Array.from(tbody.querySelectorAll("tr"));
+
+        linhas.sort((a, b) => {
+          let valA = getValorCelula(a, colIndex);
+          let valB = getValorCelula(b, colIndex);
+
+          // tenta número puro
+          let numA = parseFloat(valA.replace(",", "."));
+          let numB = parseFloat(valB.replace(",", "."));
+
+          if (!isNaN(numA) && !isNaN(numB)) {
+            return estado === 1 ? numA - numB : numB - numA;
+          }
+
+          // tenta número no final da string
+          let finalA = extrairNumeroFinal(valA);
+          let finalB = extrairNumeroFinal(valB);
+
+          if (finalA !== null && finalB !== null) {
+            return estado === 1 ? finalA - finalB : finalB - finalA;
+          }
+
+          // fallback: string com ordenação natural
+          return estado === 1
+            ? valA.localeCompare(valB, undefined, { numeric: true, sensitivity: "base" })
+            : valB.localeCompare(valA, undefined, { numeric: true, sensitivity: "base" });
+        });
+
+        linhas.forEach(tr => tbody.appendChild(tr));
+
+        // seta visual
+        th.textContent = th.dataset.label + (estado === 1 ? " ↑" : " ↓");
+      });
+    });
+  });
+}
+
+function getValorCelula(tr, index) {
+  const td = tr.children[index];
+
+  const select = td.querySelector("select");
+  if (select) {
+    return select.value || "";
+  }
+
+  return td.textContent.trim();
+}
+
+function extrairNumeroFinal(str) {
+  const match = str.match(/(\d+)\s*$/);
+  return match ? parseInt(match[1], 10) : null;
+}
